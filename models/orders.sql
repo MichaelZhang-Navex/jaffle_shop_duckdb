@@ -5,65 +5,65 @@
      'gift_card'
     ] %}
 
-WITH ORDERS AS (
+with orders as (
 
-    SELECT * FROM {{ ref('stg_orders') }}
-
-),
-
-PAYMENTS AS (
-
-    SELECT * FROM {{ ref('stg_payments') }}
+    select * from {{ ref('stg_orders') }}
 
 ),
 
-ORDER_PAYMENTS AS (
+payments as (
 
-    SELECT
-        ORDER_ID,
+    select * from {{ ref('stg_payments') }}
+
+),
+
+order_payments as (
+
+    select
+        order_id,
 
         {% for payment_method in payment_methods -%}
             sum(
-                CASE
-                    WHEN
-                        PAYMENT_METHOD = '{{ payment_method }}'
-                        THEN AMOUNT ELSE
+                case
+                    when
+                        payment_method = '{{ payment_method }}'
+                        then amount else
                         0
-                END
+                end
             )
-                AS {{ payment_method }}_amount,
+                as {{ payment_method }}_amount,
         {% endfor -%}
 
-        sum(AMOUNT) AS TOTAL_AMOUNT
+        sum(amount) as total_amount
 
-    FROM PAYMENTS
+    from payments
 
-    GROUP BY ORDER_ID
+    group by order_id
 
 ),
 
-FINAL AS (
+final as (
 
-    SELECT
-        ORDERS.ORDER_ID,
-        ORDERS.CUSTOMER_ID,
-        ORDERS.ORDER_DATE,
-        ORDERS.STATUS,
+    select
+        orders.order_id,
+        orders.customer_id,
+        orders.order_date,
+        orders.status,
 
         {% for payment_method in payment_methods -%}
 
-            ORDER_PAYMENTS.{{ payment_method }}_amount,
+            order_payments.{{ payment_method }}_amount,
 
         {% endfor -%}
 
-        ORDER_PAYMENTS.TOTAL_AMOUNT AS AMOUNT
+        order_payments.total_amount as amount
 
-    FROM ORDERS
+    from orders
 
 
-    LEFT JOIN ORDER_PAYMENTS
-        ON ORDERS.ORDER_ID = ORDER_PAYMENTS.ORDER_ID
+    left join order_payments
+        on orders.order_id = order_payments.order_id
 
 )
 
-SELECT * FROM FINAL
+select * from final
