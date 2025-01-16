@@ -2,7 +2,7 @@
 templater = dbt
 dialect = snowflake
 runaway_limit = 10
-max_line_length = 80
+max_line_length = 120
 indent_unit = space
 exclude_rules = ST07
 

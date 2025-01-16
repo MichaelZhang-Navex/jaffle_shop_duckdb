@@ -4,6 +4,9 @@
 		"mechatroner.rainbow-csv",
         "yzhang.markdown-all-in-one",
 		"redhat.vscode-yaml",
-		"dorzey.vscode-sqlfluff"
+		"dorzey.vscode-sqlfluff",
+		"ms-python.python",
+		"eamodio.gitlens",
+		"GitHub.copilot-chat"
 	]
 }
